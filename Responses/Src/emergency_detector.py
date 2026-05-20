@@ -1,7 +1,13 @@
 import asyncio
 import threading
-from bleak import BleakClient, BleakScanner
 from config import *
+
+try:
+    from bleak import BleakClient, BleakScanner
+    BLE_AVAILABLE = True
+except ImportError:
+    print("⚠️ 'bleak' module not found. BLE SOS features will be disabled (Vercel Mode).")
+    BLE_AVAILABLE = False
 
 class EmergencyDetector:
     def __init__(self):
@@ -27,6 +33,9 @@ class EmergencyDetector:
     
     async def find_ble_device(self):
         """Scan for SOS BLE device"""
+        if not BLE_AVAILABLE:
+            return None
+            
         print("🔍 Scanning for BLE SOS device...")
         try:
             devices = await BleakScanner.discover(timeout=5.0)
@@ -42,6 +51,10 @@ class EmergencyDetector:
     
     async def trigger_ble_sos(self):
         """Trigger SOS signal via BLE"""
+        if not BLE_AVAILABLE:
+            print("⚠️ BLE is not available. Skipping SOS trigger.")
+            return False
+            
         if not self.ble_device:
             self.ble_device = await self.find_ble_device()
         
