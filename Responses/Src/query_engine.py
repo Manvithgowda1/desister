@@ -1,11 +1,17 @@
-import faiss
-import numpy as np
 import json
 import requests
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
 from config import *
 from image_output import resolve_response_media
+
+try:
+    import faiss
+    import numpy as np
+    from sentence_transformers import SentenceTransformer
+    from sklearn.metrics.pairwise import cosine_similarity
+    ML_AVAILABLE = True
+except ImportError:
+    print("⚠️ Heavy ML packages not found. Running in Cloud/Vercel mode (RAG disabled).")
+    ML_AVAILABLE = False
 
 # Keywords that indicate a disaster/emergency related query
 DISASTER_KEYWORDS = [
@@ -39,22 +45,27 @@ class QueryEngine:
     def __init__(self):
         print("🧠 Initializing Query Engine...")
         
-        # Load sentence transformer
-        self.model = SentenceTransformer("all-MiniLM-L6-v2")
-        
-        # Load FAISS index and metadata
-        try:
-            self.index = faiss.read_index(FAISS_INDEX_PATH)
-            with open(METADATA_PATH, 'r') as f:
-                data = json.load(f)
-            self.texts = data["texts"]
-            self.metadata = data["meta"]
-            print(f"✅ RAG loaded: {len(self.texts)} documents")
-        except Exception as e:
-            print(f"❌ Error loading RAG data: {e}")
-            self.index = None
-            self.texts = []
-            self.metadata = []
+        self.index = None
+        self.texts = []
+        self.metadata = []
+        self.model = None
+
+        if ML_AVAILABLE:
+            # Load sentence transformer
+            self.model = SentenceTransformer("all-MiniLM-L6-v2")
+            
+            # Load FAISS index and metadata
+            try:
+                self.index = faiss.read_index(FAISS_INDEX_PATH)
+                with open(METADATA_PATH, 'r') as f:
+                    data = json.load(f)
+                self.texts = data["texts"]
+                self.metadata = data["meta"]
+                print(f"✅ RAG loaded: {len(self.texts)} documents")
+            except Exception as e:
+                print(f"❌ Error loading RAG data: {e}")
+        else:
+            print("⚠️ Skipping FAISS and SentenceTransformer initialization (Vercel Mode)")
         
         # Load emergency FAQ
         try:
@@ -89,8 +100,8 @@ class QueryEngine:
         return best_match
     
     def search_rag_database(self, query_text, top_k=3, confidence_threshold=0.65):
-        """Search RAG database using vector similarity"""
-        if not self.index or not self.texts:
+        """Search FAISS index for relevant context."""
+        if not ML_AVAILABLE or not self.index or len(self.texts) == 0 or self.model is None:
             return None, 0.0
         
         try:
