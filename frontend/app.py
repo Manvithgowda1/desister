@@ -113,6 +113,7 @@ def chat():
         "visual_guide_available": result.get("visual_guide_available", False),
         "offline_text_only": result.get("offline_text_only", False),
         "image_topic": result.get("image_topic"),
+        "urgency": result.get("urgency", {}),
     })
 
 def start_server():

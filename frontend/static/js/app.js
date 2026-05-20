@@ -16,8 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
         recognition.continuous = false;
-        recognition.interimResults = false;
+        recognition.interimResults = true;
         recognition.lang = 'en-US';
+        recognition.maxAlternatives = 3;
 
         recognition.onstart = () => {
             isRecording = true;
@@ -26,9 +27,24 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            messageInput.value = transcript;
-            sendMessage(true);
+            let finalTranscript = '';
+            let interimTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript;
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+            // Show interim results in the input field
+            if (interimTranscript) {
+                messageInput.value = interimTranscript;
+            }
+            if (finalTranscript) {
+                messageInput.value = finalTranscript;
+                sendMessage(true);
+            }
         };
 
         recognition.onerror = (event) => {
@@ -51,13 +67,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     micBtn.addEventListener('click', () => {
-        if (!recognition) return;
+        if (!recognition) {
+            alert('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
+            return;
+        }
 
         if (isRecording) {
             recognition.stop();
         } else {
             window.speechSynthesis.cancel();
-            recognition.start();
+            try {
+                recognition.start();
+            } catch (e) {
+                console.error('Could not start speech recognition:', e);
+                stopRecording();
+            }
         }
     });
 
@@ -138,8 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 images: data.images || [],
                 visualGuide: data.visual_guide_available,
                 offlineTextOnly: data.offline_text_only,
+                urgency: data.urgency || {},
             });
 
+            // Only speak aloud when the user used voice input
             if (isVoice) {
                 speakText(data.response);
             }
@@ -193,9 +219,19 @@ document.addEventListener('DOMContentLoaded', () => {
             imagesHtml = '<p class="offline-visual-note"><i class="fa-solid fa-wifi-slash"></i> Offline — visual guide unavailable (text only).</p>';
         }
 
+        let urgencyHtml = '';
+        if (extras.urgency && extras.urgency.level) {
+            urgencyHtml = `
+                <div class="urgency-badge" style="background-color: ${extras.urgency.color}15; color: ${extras.urgency.color}; border: 1px solid ${extras.urgency.color}40; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                    ${extras.urgency.icon} ${extras.urgency.label}
+                </div>
+            `;
+        }
+
         messageDiv.innerHTML = `
             <div class="avatar"><i class="fa-solid ${avatarIcon}"></i></div>
             <div class="message-content">
+                ${urgencyHtml}
                 <p>${formattedText}</p>
                 ${imagesHtml}
             </div>
@@ -234,10 +270,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function speakText(text) {
         if (!('speechSynthesis' in window)) return;
-        const cleanText = text.replace(/[*#]/g, '');
+        window.speechSynthesis.cancel(); // Stop any ongoing speech
+        const cleanText = text.replace(/[*#]/g, '').replace(/\n/g, '. ');
         const utterance = new SpeechSynthesisUtterance(cleanText);
-        utterance.rate = 1.0;
+        utterance.rate = 0.95;
         utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        // Prefer a clear English voice
+        const voices = window.speechSynthesis.getVoices();
+        const preferred = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google'));
+        if (preferred) utterance.voice = preferred;
         window.speechSynthesis.speak(utterance);
+    }
+
+    // Preload voices (Chrome loads them async)
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     }
 });
