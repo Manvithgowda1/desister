@@ -1,0 +1,76 @@
+{
+  "topics": {
+    "choking": {
+      "keywords": ["choking", "heimlich", "can't breathe", "airway", "swallowed"],
+      "images": [
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Abdominal_thrusts.jpg",
+          "caption": "Abdominal thrusts (Heimlich maneuver)"
+        }
+      ]
+    },
+    "bleeding": {
+      "keywords": ["bleeding", "blood", "cut", "wound", "hemorrhage"],
+      "images": [
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/fe/MRF-E_19_2-_TCCC_%285693859%29.jpg",
+          "caption": "Apply firm pressure and bandage to control bleeding"
+        }
+      ]
+    },
+    "fire": {
+      "keywords": ["fire", "burning", "smoke", "flames"],
+      "images": [
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/8/8d/Stop%2C_drop_and_roll_%28Stop%2C_drop%2C_cover_and_roll%29_-_if_clothes_catch_fire.jpg",
+          "caption": "Stop, Drop, and Roll if clothes catch fire"
+        }
+      ]
+    },
+    "cpr": {
+      "keywords": ["cpr", "cardiac arrest", "not breathing", "no pulse", "resuscitation"],
+      "images": [
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Chest-compression-hand-placement.jpg",
+          "caption": "CPR: hand placement for chest compressions"
+        }
+      ]
+    },
+    "earthquake": {
+      "keywords": ["earthquake", "shaking", "tremor", "aftershock"],
+      "images": [
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Ben_Reese_watches_as_children_practice_earthquake_drill._%2810676944664%29.jpg",
+          "caption": "Practice Drop, Cover, and Hold On during an earthquake drill"
+        }
+      ]
+    },
+    "burns": {
+      "keywords": ["burn", "burned", "scald", "hot water"],
+      "images": [
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Burn_2nd_degree_2.jpg",
+          "caption": "Burn severity reference — cool minor burns with clean running water"
+        }
+      ]
+    },
+    "fracture": {
+      "keywords": ["broken bone", "fracture", "splint", "sprain"],
+      "images": [
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/5/54/Splinting-an-arm.png",
+          "caption": "Immobilize suspected fractures with a splint"
+        }
+      ]
+    },
+    "flood": {
+      "keywords": ["flood", "flooding", "flash flood", "rising water"],
+      "images": [
+        {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Flood_rescue_boats_in_Lismore_Place_-_geograph.org.uk_-_4760952.jpg",
+          "caption": "Avoid flood water; use official rescue when available"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisis-AI Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="chat-container">
+        <header class="chat-header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fa-solid fa-truck-medical"></i>
+                </div>
+                <div class="header-text">
+                    <h1>Crisis-AI</h1>
+                    <p class="subtitle">Offline Emergency Assistant</p>
+                </div>
+            </div>
+            <div id="connection-status" class="connection-status offline" title="Network status">
+                <i class="fa-solid fa-wifi"></i>
+                <span>Checking...</span>
+            </div>
+            <div id="sos-indicator" class="sos-indicator hidden">
+                <div class="pulse-ring"></div>
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>SOS Active</span>
+            </div>
+        </header>
+
+        <main class="chat-box" id="chat-box">
+            <div class="message system">
+                <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                <div class="message-content">
+                    <p>Hello. I am your Crisis-AI assistant. How can I help you today?</p>
+                    <p class="mode-hint">When online, visual guides appear for procedures like choking or fire safety. Offline mode is text only.</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="input-area">
+            <div class="input-wrapper">
+                <button id="mic-btn" class="mic-btn" title="Click to speak">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+                
+                <textarea id="message-input" placeholder="Type your emergency query here..." rows="1" autofocus></textarea>
+                
+                <button id="send-btn" class="send-btn" title="Send message">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+            <p class="footer-note">Crisis-AI can make mistakes. In a life-threatening emergency, call local authorities immediately.</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
