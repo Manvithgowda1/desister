@@ -1,7 +1,7 @@
 {
   "functions": {
     "frontend/app.py": {
-      "runtime": "python3.12"
+      "runtime": "@vercel/python"
     }
   },
   "rewrites": [
