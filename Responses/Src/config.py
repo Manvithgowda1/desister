@@ -1,4 +1,18 @@
 import os
+import sys
+
+# Ensure UTF-8 output on Windows consoles to prevent UnicodeEncodeErrors when printing emojis
+if sys.platform.startswith('win'):
+    if hasattr(sys.stdout, 'reconfigure'):
+        try:
+            sys.stdout.reconfigure(encoding='utf-8')
+        except Exception:
+            pass
+    if hasattr(sys.stderr, 'reconfigure'):
+        try:
+            sys.stderr.reconfigure(encoding='utf-8')
+        except Exception:
+            pass
 
 # Paths: repository Voice_Assistant/ (next to Responses/)
 _SRC_DIR = os.path.dirname(os.path.abspath(__file__))

@@ -10,9 +10,6 @@ SRC = os.path.join(ROOT, "Responses", "Src")
 if SRC not in sys.path:
     sys.path.insert(0, SRC)
 
-# Change directory so config.py relative paths resolve correctly
-os.chdir(SRC)
-
 from query_engine import QueryEngine
 from emergency_detector import EmergencyDetector
 from image_output import is_online, proxy_target_allowed, WIKIMEDIA_HTTP_HEADERS

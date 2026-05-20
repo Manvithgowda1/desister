@@ -13,6 +13,7 @@ from config import IMAGE_CATALOG_PATH
 ALLOWED_IMAGE_HOSTS = (
     "upload.wikimedia.org",
     "commons.wikimedia.org",
+    "image.pollinations.ai",
 )
 
 # Wikimedia requires a descriptive User-Agent for programmatic access.
@@ -52,12 +53,14 @@ def _url_allowed(url: str) -> bool:
 
 
 def proxy_target_allowed(url: str) -> bool:
-    """Strict allowlist for /api/image-proxy (Wikimedia Commons files only)."""
+    """Strict allowlist for /api/image-proxy (Wikimedia Commons and Pollinations AI)."""
     try:
         p = urlparse(url)
         if p.scheme != "https":
             return False
         host = (p.hostname or "").lower()
+        if host == "image.pollinations.ai":
+            return True
         if host != "upload.wikimedia.org":
             return False
         path = (p.path or "").lower()
@@ -120,6 +123,7 @@ def resolve_response_media(
     query_text: str,
     response_text: str,
     faq_match: dict | None = None,
+    urgency_level: str = "low",
 ) -> dict[str, Any]:
     """
     Build API/CLI payload: text always; images only when online and topic matches.
@@ -136,13 +140,32 @@ def resolve_response_media(
         "visual_guide_available": False,
     }
 
-    if online and topic:
-        images = get_images_for_topic(topic)
-        if images:
-            for im in images:
-                url = im["url"]
-                im["src"] = f"/api/image-proxy?u={quote(url, safe='')}"
-            payload["images"] = images
+    if online:
+        if topic:
+            images = get_images_for_topic(topic)
+            if images:
+                for im in images:
+                    url = im["url"]
+                    im["src"] = f"/api/image-proxy?u={quote(url, safe='')}"
+                payload["images"] = images
+                payload["visual_guide_available"] = True
+        
+        # If no predefined images exist, but it is an emergency (urgency is medium, high, critical),
+        # try to generate a helpful diagram/schematic using Pollinations AI.
+        if not payload["images"] and urgency_level in ("medium", "high", "critical"):
+            clean_query = query_text.strip().replace("\n", " ")
+            if len(clean_query) > 100:
+                clean_query = clean_query[:100] + "..."
+            
+            prompt_str = f"Safety instruction diagram for {clean_query}, first aid steps, clean vector infographic style"
+            gen_url = f"https://image.pollinations.ai/prompt/{quote(prompt_str)}?width=800&height=600&nologo=true"
+            
+            payload["images"] = [{
+                "url": gen_url,
+                "src": f"/api/image-proxy?u={quote(gen_url, safe='')}",
+                "caption": f"AI-Generated Safety Guide: {clean_query}",
+                "topic": "generated_emergency_guide"
+            }]
             payload["visual_guide_available"] = True
 
     if would_show and not online:

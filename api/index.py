@@ -11,7 +11,5 @@ if SRC not in sys.path:
 if FRONTEND not in sys.path:
     sys.path.insert(0, FRONTEND)
 
-os.chdir(SRC)
-
 # Import the Flask app from frontend/app.py
 from app import app

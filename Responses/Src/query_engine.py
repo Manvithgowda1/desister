@@ -379,7 +379,7 @@ class QueryEngine:
         """
         urgency = self.analyze_crisis_urgency(query_text)
         text, faq_match = self._build_text_response(query_text)
-        result = resolve_response_media(query_text, text, faq_match)
+        result = resolve_response_media(query_text, text, faq_match, urgency["level"])
         result["urgency"] = urgency
         return result
     
