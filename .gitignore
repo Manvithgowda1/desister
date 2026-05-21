@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+crisis_env/
+
+# Vosk model (downloaded via setup_project.py)
+Voice_Assistant/Models/vosk-model-small-en-us-0.15/
+*.zip
+
+# Generated FAISS index (built via setup_project.py)
+Voice_Assistant/Data/rag_index.faiss
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
