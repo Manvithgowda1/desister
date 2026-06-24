@@ -1,0 +1,22 @@
+============================================================
+FLOOD PREDICTION MODEL EVALUATION REPORT
+============================================================
+Generated: 2026-06-23 22:48:01
+
+[Performance Metrics]
+accuracy: 0.6900
+precision: 0.6847
+recall: 0.7224
+f1_score: 0.7031
+roc_auc: 0.7748
+true_negatives: 323
+false_positives: 169
+false_negatives: 141
+true_positives: 367
+
+[Confusion Matrix]
+[[323 169]
+ [141 367]]
+
+[Risk Category Distribution]
+Series([], Name: count, dtype: int64)

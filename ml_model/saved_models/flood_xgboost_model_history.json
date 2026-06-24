@@ -1,0 +1,13 @@
+{
+  "training_samples": 4000,
+  "positive_class_ratio": 0.50825,
+  "best_params": {
+    "colsample_bytree": 0.8,
+    "learning_rate": 0.01,
+    "max_depth": 4,
+    "min_child_weight": 5,
+    "n_estimators": 100,
+    "subsample": 0.8
+  },
+  "validation_accuracy": 0.69
+}

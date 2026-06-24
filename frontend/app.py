@@ -19,8 +19,10 @@ app = Flask(__name__,
             static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 
 print("Initializing backend components for Web App...")
+print("Loading ML models (cached for future requests)...")
 query_engine = QueryEngine()
 emergency_detector = EmergencyDetector()
+print("✅ Backend components initialized - ML models loaded once and cached")
 
 @app.route('/')
 def index():

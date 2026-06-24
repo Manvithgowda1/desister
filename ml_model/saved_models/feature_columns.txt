@@ -1,0 +1,11 @@
+latitude
+longitude
+seismic_zone
+historical_eq_frequency
+avg_historical_magnitude
+fault_proximity_km
+population_density
+zone_magnitude_interaction
+log_fault_proximity
+freq_per_zone
+high_density_zone

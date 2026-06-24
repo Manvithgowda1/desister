@@ -19,6 +19,7 @@ from query_engine import QueryEngine
 from emergency_detector import EmergencyDetector
 from response_display import present_result
 from config import *
+from disaster_integration import get_disaster_integration
 
 class CrisisVoiceAssistant:
     def __init__(self):
@@ -30,6 +31,7 @@ class CrisisVoiceAssistant:
             self.voice_handler = VoiceHandler()
             self.query_engine = QueryEngine()
             self.emergency_detector = EmergencyDetector()
+            self.disaster_integration = get_disaster_integration()
             
             self.is_running = False
             self.processing_lock = threading.Lock()
@@ -73,10 +75,31 @@ class CrisisVoiceAssistant:
                 self.voice_handler.speak(cleaned_response, block=True)
 
             else:
-                result = self.query_engine.process_query(text)
-                present_result(result, open_images=True)
-                cleaned_response = self._clean_response_for_tts(result["text"])
-                self.voice_handler.speak(cleaned_response, block=True)
+                # Check for disaster prediction query
+                disaster_result = self.disaster_integration.process_query(text)
+                
+                if disaster_result and disaster_result.get('is_disaster_query'):
+                    print(f"Disaster prediction: {disaster_result.get('disaster_type')}")
+                    
+                    if disaster_result.get('success'):
+                        # Speak the disaster prediction response
+                        response_text = disaster_result['response_text']
+                        self.voice_handler.speak(response_text, block=True)
+                        
+                        # Also display the result
+                        print(f"Probability: {disaster_result.get('probability')}%")
+                        print(f"Risk Level: {disaster_result.get('risk_level')}")
+                        print(f"Confidence: {disaster_result.get('confidence')}%")
+                    else:
+                        # API error
+                        error_response = disaster_result['response_text']
+                        self.voice_handler.speak(error_response, block=True)
+                else:
+                    # Regular query processing
+                    result = self.query_engine.process_query(text)
+                    present_result(result, open_images=True)
+                    cleaned_response = self._clean_response_for_tts(result["text"])
+                    self.voice_handler.speak(cleaned_response, block=True)
                 
         except Exception as e:
             error_msg = "I encountered an error. Please try again."

@@ -1,0 +1,8 @@
+               precision    recall  f1-score   support
+
+No Earthquake     0.5986    0.7788    0.6769       339
+   Earthquake     0.8658    0.7322    0.7934       661
+
+     accuracy                         0.7480      1000
+    macro avg     0.7322    0.7555    0.7352      1000
+ weighted avg     0.7753    0.7480    0.7539      1000

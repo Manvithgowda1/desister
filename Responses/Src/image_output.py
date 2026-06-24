@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import socket
+import time
 from typing import Any
 from urllib.parse import quote, urlparse
 
@@ -25,16 +26,30 @@ WIKIMEDIA_HTTP_HEADERS = {
     "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
 }
 
+_LAST_ONLINE_CHECK_TIME = 0.0
+_LAST_ONLINE_CHECK_RESULT = False
+ONLINE_CHECK_CACHE_TTL = 60.0  # seconds
 
-def is_online(timeout: float = 2.0) -> bool:
-    """True when the device can reach the public internet."""
+
+def is_online(timeout: float = 1.0) -> bool:
+    """True when the device can reach the public internet (cached for 60s)."""
+    global _LAST_ONLINE_CHECK_TIME, _LAST_ONLINE_CHECK_RESULT
+    now = time.time()
+    if now - _LAST_ONLINE_CHECK_TIME < ONLINE_CHECK_CACHE_TTL:
+        return _LAST_ONLINE_CHECK_RESULT
+
+    result = False
     for host, port in (("1.1.1.1", 53), ("8.8.8.8", 53)):
         try:
             with socket.create_connection((host, port), timeout=timeout):
-                return True
+                result = True
+                break
         except OSError:
             continue
-    return False
+
+    _LAST_ONLINE_CHECK_RESULT = result
+    _LAST_ONLINE_CHECK_TIME = now
+    return result
 
 
 def _load_catalog() -> dict[str, Any]:
@@ -74,7 +89,13 @@ def proxy_target_allowed(url: str) -> bool:
 
 
 def detect_image_topic(query_text: str, faq_match: dict | None = None) -> str | None:
-    """Pick a visual-guide topic from FAQ metadata or keyword catalog."""
+    """Pick a visual-guide topic from FAQ metadata or keyword catalog.
+
+    For FAQ matches the topic is taken directly from FAQ metadata (curated).
+    For free-text catalog scans we require at least TWO keyword hits so that a
+    single common word (e.g. "water", "help") doesn't trigger an unrelated
+    visual guide.
+    """
     if faq_match:
         topic = faq_match.get("image_topic")
         if topic:
@@ -94,7 +115,9 @@ def detect_image_topic(query_text: str, faq_match: dict | None = None) -> str | 
             best_score = score
             best_topic = topic_id
 
-    return best_topic if best_score > 0 else None
+    # Require at least 2 keyword matches to avoid false positives from
+    # single common words like "water", "hot", "help", etc.
+    return best_topic if best_score >= 2 else None
 
 
 def get_images_for_topic(topic: str) -> list[dict[str, str]]:
@@ -119,6 +142,12 @@ def get_images_for_topic(topic: str) -> list[dict[str, str]]:
     return images
 
 
+# Session-level deduplication: track recently shown image topics so the same
+# visual guide isn't repeated on back-to-back responses.
+_RECENT_IMAGE_TOPICS: list[str] = []
+_MAX_RECENT_TOPICS = 5  # remember last 5 topics shown
+
+
 def resolve_response_media(
     query_text: str,
     response_text: str,
@@ -126,7 +155,8 @@ def resolve_response_media(
     urgency_level: str = "low",
 ) -> dict[str, Any]:
     """
-    Build API/CLI payload: text always; images only when online and topic matches.
+    Build API/CLI payload: text always; images only when online, topic matches,
+    AND the same topic hasn't been shown recently.
     """
     topic = detect_image_topic(query_text, faq_match)
     online = is_online()
@@ -140,8 +170,9 @@ def resolve_response_media(
         "visual_guide_available": False,
     }
 
-    if online:
-        if topic:
+    if online and topic:
+        # Skip images if this exact topic was already shown recently
+        if topic not in _RECENT_IMAGE_TOPICS:
             images = get_images_for_topic(topic)
             if images:
                 for im in images:
@@ -149,26 +180,14 @@ def resolve_response_media(
                     im["src"] = f"/api/image-proxy?u={quote(url, safe='')}"
                 payload["images"] = images
                 payload["visual_guide_available"] = True
-        
-        # If no predefined images exist, but it is an emergency (urgency is medium, high, critical),
-        # try to generate a helpful diagram/schematic using Pollinations AI.
-        if not payload["images"] and urgency_level in ("medium", "high", "critical"):
-            clean_query = query_text.strip().replace("\n", " ")
-            if len(clean_query) > 100:
-                clean_query = clean_query[:100] + "..."
-            
-            prompt_str = f"Safety instruction diagram for {clean_query}, first aid steps, clean vector infographic style"
-            gen_url = f"https://image.pollinations.ai/prompt/{quote(prompt_str)}?width=800&height=600&nologo=true"
-            
-            payload["images"] = [{
-                "url": gen_url,
-                "src": f"/api/image-proxy?u={quote(gen_url, safe='')}",
-                "caption": f"AI-Generated Safety Guide: {clean_query}",
-                "topic": "generated_emergency_guide"
-            }]
-            payload["visual_guide_available"] = True
+
+                # Record this topic so it won't repeat immediately
+                _RECENT_IMAGE_TOPICS.append(topic)
+                if len(_RECENT_IMAGE_TOPICS) > _MAX_RECENT_TOPICS:
+                    _RECENT_IMAGE_TOPICS.pop(0)
 
     if would_show and not online:
         payload["offline_text_only"] = True
 
     return payload
+

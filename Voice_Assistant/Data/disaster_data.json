@@ -1,0 +1,108 @@
+{
+  "karnataka": {
+    "zones": {
+      "earthquake": {"zone": "Zone II & III", "score": 30, "reason": "Peninsular shield area, low-to-moderate seismic hazard index."},
+      "flood": {"score": 40, "high_risk_districts": ["belagavi", "kodagu", "dharwad", "bagalkot", "dakshina kannada", "udupi", "uttara kannada", "mysuru"]},
+      "cyclone": {"score": 25, "high_risk_districts": ["dakshina kannada", "udupi", "uttara kannada"]},
+      "landslide": {"score": 35, "high_risk_districts": ["kodagu", "chikkamagaluru", "shimoga", "uttara kannada", "dakshina kannada"]},
+      "drought": {"score": 50, "high_risk_districts": ["tumakuru", "chikkaballapura", "kolar", "chitradurga", "bellary", "vijayapura", "bagalkot"]},
+      "heatwave": {"score": 40, "high_risk_districts": ["kalaburagi", "raichur", "koppal", "bagalkot", "bellary", "bidar"]}
+    },
+    "districts": {
+      "bengaluru": {
+        "earthquake": {"score": 25, "reason": "Zone II, stable plate interior, low seismic vulnerability."},
+        "flood": {"score": 45, "reason": "Urban flooding risk due to storm water drain bottlenecks and heavy rainfall events."},
+        "cyclone": {"score": 10, "reason": "Inland location prevents direct cyclone impact, though it experiences associated rainfall."},
+        "landslide": {"score": 5, "reason": "Flat topography, negligible landslide vulnerability."},
+        "drought": {"score": 55, "reason": "Highly prone to water stress and groundwater depletion during monsoon deficits."},
+        "heatwave": {"score": 35, "reason": "Moderated by elevation, though urban heat island effect is increasing summer temperatures."}
+      },
+      "mysuru": {
+        "earthquake": {"score": 20, "reason": "Zone II, low seismic risk area."},
+        "flood": {"score": 50, "reason": "Proximity to Kabini and Cauvery river basins can trigger riverine floods during heavy discharge from dams."},
+        "cyclone": {"score": 10, "reason": "Inland region, minimal cyclone wind impact."},
+        "landslide": {"score": 15, "reason": "Mostly flat with Chamundi hills showing minor slope stability concerns."},
+        "drought": {"score": 45, "reason": "Moderate drought risk in dry farming pockets of the district."},
+        "heatwave": {"score": 35, "reason": "Comfortable climate but experiences moderate heatwave-like spikes in April-May."}
+      },
+      "kodagu": {
+        "earthquake": {"score": 25, "reason": "Zone II/III seismic profile."},
+        "flood": {"score": 60, "reason": "Extreme monsoon rainfall and runoff in the Cauvery catchment causes heavy river flooding."},
+        "cyclone": {"score": 15, "reason": "Inland hill station, safe from direct coastal storm surges."},
+        "landslide": {"score": 85, "reason": "Steep slopes, fragile soil, deforestation, and extreme rainfall events cause high landslide susceptibility."},
+        "drought": {"score": 15, "reason": "High average rainfall makes drought a rare event."},
+        "heatwave": {"score": 10, "reason": "Cool climate moderated by high altitude and dense forest cover."}
+      }
+    }
+  },
+  "kerala": {
+    "zones": {
+      "earthquake": {"zone": "Zone III", "score": 35, "reason": "Moderate seismic activity zone."},
+      "flood": {"score": 75, "high_risk_districts": ["wayanad", "idukki", "alappuzha", "pathanamthitta", "kottayam", "ernakulam", "thrissur", "malappuram"]},
+      "cyclone": {"score": 45, "high_risk_districts": ["thiruvananthapuram", "kollam", "alappuzha", "ernakulam", "kozhikode"]},
+      "landslide": {"score": 80, "high_risk_districts": ["wayanad", "idukki", "pathanamthitta", "palakkad", "malappuram"]},
+      "drought": {"score": 25, "high_risk_districts": ["palakkad", "kasaragod"]},
+      "heatwave": {"score": 30, "high_risk_districts": ["palakkad", "thrissur", "kannur"]}
+    },
+    "districts": {
+      "wayanad": {
+        "earthquake": {"score": 25, "reason": "Zone III, moderate seismic vulnerability."},
+        "flood": {"score": 75, "reason": "High rainfall coupled with run-off in hilly terrain leads to rapid localized flooding."},
+        "cyclone": {"score": 20, "reason": "Inland mountainous area, sheltered from direct coastal storm surges but prone to heavy rain."},
+        "landslide": {"score": 90, "reason": "Highly unstable hill slopes, loose soil structure, and history of severe fatal landslides during heavy monsoons."},
+        "drought": {"score": 20, "reason": "Generally wet region but experiences dry spells affecting plantation agriculture."},
+        "heatwave": {"score": 15, "reason": "Moderated by high altitude and green cover."}
+      },
+      "alappuzha": {
+        "earthquake": {"score": 20, "reason": "Stable low-lying coastal zone, low seismic activity."},
+        "flood": {"score": 90, "reason": "Kuttanad region lies below sea level, receiving runoff from key rivers, making it extremely flood-prone."},
+        "cyclone": {"score": 60, "reason": "Vulnerable low-lying coastline, prone to storm surge, high winds, and coastal erosion."},
+        "landslide": {"score": 0, "reason": "Entirely flat coastal plains; zero landslide risk."},
+        "drought": {"score": 15, "reason": "Abundant water resources, very low drought vulnerability."},
+        "heatwave": {"score": 25, "reason": "Humid maritime climate, temp spikes feel warmer due to high relative humidity."}
+      }
+    }
+  },
+  "tamil nadu": {
+    "zones": {
+      "earthquake": {"zone": "Zone II & III", "score": 25, "reason": "Low to moderate seismic zone."},
+      "flood": {"score": 55, "high_risk_districts": ["chennai", "cuddalore", "nagapattinam", "kanchipuram", "tiruvallur", "tanjavur"]},
+      "cyclone": {"score": 70, "high_risk_districts": ["nagapattinam", "cuddalore", "chennai", "ramanathapuram", "kanyakumari", "thanjavur"]},
+      "landslide": {"score": 40, "high_risk_districts": ["nilgiris", "dindigul", "theni", "coimbatore"]},
+      "drought": {"score": 65, "high_risk_districts": ["ramanathapuram", "tuticorin", "dharmapuri", "ariyalur", "perambalur", "pudukkottai"]},
+      "heatwave": {"score": 55, "high_risk_districts": ["chennai", "vellore", "tiruchirappalli", "madurai", "karur"]}
+    },
+    "districts": {
+      "chennai": {
+        "earthquake": {"score": 30, "reason": "Zone III, moderate seismic risk profile with urban structural vulnerability."},
+        "flood": {"score": 85, "reason": "Low-lying coastal city, vulnerable to severe urban flooding due to storm surges, poor drainage, and heavy monsoons (NE monsoon)."},
+        "cyclone": {"score": 80, "reason": "Directly situated on the cyclone-prone East Coast, frequently experiencing storm surges and destructive gale winds."},
+        "landslide": {"score": 0, "reason": "Flat coastal topography; zero landslide risk."},
+        "drought": {"score": 60, "reason": "Prone to severe drinking water crises due to monsoon failure and dependence on surface reservoirs."},
+        "heatwave": {"score": 65, "reason": "High humidity combined with peak summer temperatures (Kathiri season) yields extreme apparent heat indices."}
+      },
+      "nilgiris": {
+        "earthquake": {"score": 25, "reason": "Zone II/III seismic risk."},
+        "flood": {"score": 45, "reason": "Prone to flash floods in valleys due to extreme cloudburst events during Southwest and Northeast monsoons."},
+        "cyclone": {"score": 20, "reason": "Inland mountainous area, safe from storm surge but vulnerable to heavy rain and wind damage."},
+        "landslide": {"score": 90, "reason": "High altitude, steep slopes, tea plantation soil disturbance, and heavy rains make it the most landslide-prone district in Tamil Nadu."},
+        "drought": {"score": 15, "reason": "High rainfall region with perennial springs; low drought risk."},
+        "heatwave": {"score": 5, "reason": "High elevation hill station (Ooty) with cool year-round climate."}
+      }
+    }
+  },
+  "climatology": {
+    "karnataka": {
+      "rainfall": [5, 5, 10, 40, 110, 190, 280, 200, 140, 130, 50, 10],
+      "temperature": [25, 27, 30, 32, 31, 28, 26, 26, 26, 26, 25, 24]
+    },
+    "kerala": {
+      "rainfall": [20, 30, 40, 110, 250, 650, 720, 410, 250, 290, 170, 40],
+      "temperature": [28, 29, 30, 30, 29, 27, 26, 26, 27, 27, 27, 27]
+    },
+    "tamil nadu": {
+      "rainfall": [20, 15, 20, 45, 70, 50, 75, 95, 115, 180, 180, 95],
+      "temperature": [25, 27, 29, 31, 33, 32, 31, 30, 30, 28, 26, 25]
+    }
+  }
+}

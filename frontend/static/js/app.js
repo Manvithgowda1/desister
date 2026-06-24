@@ -163,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 visualGuide: data.visual_guide_available,
                 offlineTextOnly: data.offline_text_only,
                 urgency: data.urgency || {},
+                risk_prediction: data.risk_prediction,
             });
 
             // Only speak aloud when the user used voice input
@@ -228,11 +229,37 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
 
+        let riskHtml = '';
+        if (extras.risk_prediction && extras.risk_prediction.length > 0) {
+            riskHtml = '<div class="risk-dashboard">';
+            extras.risk_prediction.forEach(r => {
+                const badgeColor = r.level === 'High' ? '#dc2626' : (r.level === 'Moderate' ? '#ea580c' : '#16a34a');
+                riskHtml += `
+                    <div class="risk-card">
+                        <div class="risk-header">
+                            <span class="risk-disaster">${escapeHtml(r.disaster)}</span>
+                            <span class="risk-level-badge" style="background-color: ${badgeColor}20; color: ${badgeColor}; border: 1px solid ${badgeColor}50;">
+                                ${escapeHtml(r.level)}
+                            </span>
+                        </div>
+                        <div class="risk-gauge-container">
+                            <div class="risk-gauge-bg"></div>
+                            <div class="risk-gauge-bar" style="width: ${r.score}%; background: ${badgeColor};"></div>
+                        </div>
+                        <div class="risk-score-value">Risk Score: <strong>${r.score}/100</strong></div>
+                        <p class="risk-details">${escapeHtml(r.reason)}<br><small style="opacity: 0.85;">${escapeHtml(r.details)}</small></p>
+                    </div>
+                `;
+            });
+            riskHtml += '</div>';
+        }
+
         messageDiv.innerHTML = `
             <div class="avatar"><i class="fa-solid ${avatarIcon}"></i></div>
             <div class="message-content">
                 ${urgencyHtml}
                 <p>${formattedText}</p>
+                ${riskHtml}
                 ${imagesHtml}
             </div>
         `;
